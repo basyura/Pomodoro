@@ -7,15 +7,17 @@
         xmlns:vm="clr-namespace:Pomodoro.ViewModels"
         WindowStyle="None"
         ResizeMode="NoResize"
-        Title="{Binding Title}" Height="35" Width="80" Margin="0"
+        Title="Pomodoro"
+        Height="35" Width="80" Margin="0"
         MouseDoubleClick="Window_MouseDoubleClick"
         MouseLeftButtonDown="Window_MouseLeftButtonDown"
+        Background="PaleVioletRed"
         Topmost="True"
         >
     <Window.DataContext>
         <vm:MainWindowViewModel />
     </Window.DataContext>
-    <Border Background="PaleVioletRed" Margin="0 -6 0 0">
+    <Border Margin="0 -6 0 0">
         <TextBlock Grid.Row="1" Text="{Binding Time}" TextAlignment="Center" VerticalAlignment="Center" Foreground="White" FontSize="30" />
     </Border>
 </Window>

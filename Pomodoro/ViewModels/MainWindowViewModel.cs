@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media;
 using Prism.Mvvm;
 
 namespace Pomodoro.ViewModels
@@ -21,20 +22,27 @@ namespace Pomodoro.ViewModels
         /// <summary>
         /// 
         /// </summary>
-        private string _title = "Pomodoro";
-        public string Title
+        public string Time
         {
-            get { return _title; }
-            set { SetProperty(ref _title, value); }
+            get
+            {
+                int sec = Seconds >= 0 ? Seconds : Seconds * -1;
+                TimeSpan span = TimeSpan.FromSeconds(sec);
+                return span.Minutes.ToString().PadLeft(2, '0') + ":" + span.Seconds.ToString().PadLeft(2, '0');
+            }
         }
         /// <summary>
         /// 
         /// </summary>
-        private string _time = "25:00";
-        public string Time
+        private int _Seconds = 25 * 60;
+        public int Seconds
         {
-            get { return _time; }
-            set { SetProperty(ref _time, value); }
+            get { return _Seconds; }
+            set
+            {
+                _Seconds = value;
+                RaisePropertyChanged("Time");
+            }
         }
         /// <summary>
         /// 
@@ -56,7 +64,7 @@ namespace Pomodoro.ViewModels
         private void Start()
         {
             IsRunning = true;
-            int seconds = 25 * 60;
+            Seconds = 25 * 60;
             Task.Run(() =>
             {
                 while (true)
@@ -65,13 +73,13 @@ namespace Pomodoro.ViewModels
                     {
                         break;
                     }
+
                     Thread.Sleep(1000);
-                    seconds--;
-                    TimeSpan span = TimeSpan.FromSeconds(seconds);
-                    Time = span.Minutes.ToString().PadLeft(2, '0') + ":" + span.Seconds.ToString().PadLeft(2, '0');
-                    if (seconds == 0)
+                    Seconds--;
+
+                    if (Seconds < 0)
                     {
-                        break;
+                        Blink();
                     }
                 }
             });
@@ -82,6 +90,21 @@ namespace Pomodoro.ViewModels
         private void Stop()
         {
             IsRunning = false;
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        private void Blink()
+        {
+            BeginInvoke(() =>
+            {
+                Window.Background = new SolidColorBrush(Colors.DodgerBlue);
+                Task.Run(() =>
+                {
+                    Thread.Sleep(200);
+                    BeginInvoke(() => Window.Background = new SolidColorBrush(Colors.PaleVioletRed));
+                });
+            });
         }
         /// <summary>
         /// 
