@@ -71,11 +71,6 @@ namespace Pomodoro.ViewModels
                     Time = span.Minutes.ToString().PadLeft(2, '0') + ":" + span.Seconds.ToString().PadLeft(2, '0');
                     if (seconds == 0)
                     {
-                        // 画面を触らせたいので Activate じゃなくて topmost を使う
-                        BeginInvoke(() => {
-                            Window.Topmost = true;
-                            BeginInvoke(() => Window.Topmost = false);
-                        });
                         break;
                     }
                 }
