@@ -9,14 +9,6 @@ namespace Pomodoro.ViewModels
 {
     public class MainWindowViewModel : BindableBase
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        public MainWindowViewModel()
-        {
-        }
-        /// <summary></summary>
-        public Window Window { get; set; }
         /// <summary></summary>
         public bool IsRunning { get; set; }
         /// <summary>
@@ -47,6 +39,15 @@ namespace Pomodoro.ViewModels
         /// <summary>
         /// 
         /// </summary>
+        private SolidColorBrush _Background = new SolidColorBrush(Colors.PaleVioletRed);
+        public SolidColorBrush Background
+        {
+            get { return _Background; }
+            set { SetProperty(ref _Background, value); }
+        }
+        /// <summary>
+        /// 
+        /// </summary>
         public void ChangeMode()
         {
             if (IsRunning)
@@ -63,7 +64,7 @@ namespace Pomodoro.ViewModels
         /// </summary>
         private void Start()
         {
-            BeginInvoke(() => Window.Background = new SolidColorBrush(Colors.PaleVioletRed));
+            ToRed();
             IsRunning = true;
             Seconds = 25 * 60;
             Task.Run(() =>
@@ -72,6 +73,10 @@ namespace Pomodoro.ViewModels
                 {
                     if (!IsRunning)
                     {
+                        if (Seconds < 0)
+                        {
+                            ToBlue();
+                        }
                         break;
                     }
 
@@ -91,25 +96,35 @@ namespace Pomodoro.ViewModels
         private void Stop()
         {
             IsRunning = false;
-            if (Seconds < 0)
-            {
-                BeginInvoke(() => Window.Background = new SolidColorBrush(Colors.DodgerBlue));
-            }
         }
         /// <summary>
         /// 
         /// </summary>
         private void Blink()
         {
-            BeginInvoke(() =>
+            ToBlue();
+            Task.Run(() =>
             {
-                Window.Background = new SolidColorBrush(Colors.DodgerBlue);
-                Task.Run(() =>
+                Thread.Sleep(200);
+                if (IsRunning || Seconds > 0)
                 {
-                    Thread.Sleep(200);
-                    BeginInvoke(() => Window.Background = new SolidColorBrush(Colors.PaleVioletRed));
-                });
+                    ToRed();
+                }
             });
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        private void ToBlue()
+        {
+            BeginInvoke(() => Background = new SolidColorBrush(Colors.DodgerBlue));
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        private void ToRed()
+        {
+            BeginInvoke(() => Background = new SolidColorBrush(Colors.PaleVioletRed));
         }
         /// <summary>
         /// 

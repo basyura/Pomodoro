@@ -15,7 +15,6 @@ namespace Pomodoro.Views
         public MainWindow()
         {
             InitializeComponent();
-            ((MainWindowViewModel)DataContext).Window = this;
         }
         /// <summary>
         /// 
