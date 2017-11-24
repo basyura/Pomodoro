@@ -63,6 +63,7 @@ namespace Pomodoro.ViewModels
         /// </summary>
         private void Start()
         {
+            BeginInvoke(() => Window.Background = new SolidColorBrush(Colors.PaleVioletRed));
             IsRunning = true;
             Seconds = 25 * 60;
             Task.Run(() =>
@@ -90,6 +91,10 @@ namespace Pomodoro.ViewModels
         private void Stop()
         {
             IsRunning = false;
+            if (Seconds < 0)
+            {
+                BeginInvoke(() => Window.Background = new SolidColorBrush(Colors.DodgerBlue));
+            }
         }
         /// <summary>
         /// 
